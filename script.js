@@ -2,9 +2,6 @@ var dragged;
 
 var d = document;
 
-checkIfDraggable();
-
-
 
 
 document.addEventListener("dragstart", function( event ) {
@@ -26,15 +23,12 @@ function checkIfDraggable() {
 // go over all discs loop
 for ( i = 1 ; i < 7 ; i++) {
     let el = d.getElementById("s"+i);
-
+    el.setAttribute('draggable', false);
     // check if the disc is on top
     if ((el.parentNode.nextElementSibling === null) || (el.parentNode.nextElementSibling.childElementCount < 1) ) {
         // set disc up to be draggable
         el.setAttribute('draggable', true);  
         } 
-        else {
-        el.setAttribute('draggable', false);  
-        }
     }
 }
 
@@ -46,6 +40,7 @@ function checkWin() {
 }
 
 function dropIt() {
+
     event.preventDefault();
     dragged.parentNode.removeChild( dragged );
     event.target.appendChild ( dragged );
@@ -57,14 +52,16 @@ function dropIt() {
 
 document.addEventListener("drop", function( event ) {
     dragged.style.opacity = 1;
-    if (event.target.classList.contains('slot')) {
-        if (event.target.childElementCount < 1) {
-            if (event.target.previousElementSibling === null) {
-                dropIt();
-            }
-            else if (event.target.previousElementSibling.childElementCount > 0) {
-                if (dragged.offsetWidth < event.target.previousElementSibling.children[0].offsetWidth) {
+    if (dragged.getAttribute('draggable') == 'true') {
+        if (event.target.classList.contains('slot')) {
+            if (event.target.childElementCount < 1) {
+                if (event.target.previousElementSibling === null) {
                     dropIt();
+                }
+                else if (event.target.previousElementSibling.childElementCount > 0) {
+                    if (dragged.offsetWidth < event.target.previousElementSibling.children[0].offsetWidth) {
+                        dropIt();
+                    }
                 }
             }
         }
