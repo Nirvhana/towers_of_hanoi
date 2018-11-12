@@ -39,24 +39,33 @@ for ( i = 1 ; i < 7 ; i++) {
 }
 
 function checkWin() {
-    if (t3s6.childElementCount === 1) {
+    if (t3s1.childElementCount === 1) {
         d.getElementById("won").style.opacity = 1;
+        d.getElementById("won").style.zIndex = 111;
     }
 }
 
+function dropIt() {
+    event.preventDefault();
+    dragged.parentNode.removeChild( dragged );
+    event.target.appendChild ( dragged );
+    dragged.style.opacity = 1;
+    
+    checkIfDraggable();
+    checkWin(); 
+}
 
 document.addEventListener("drop", function( event ) {
     dragged.style.opacity = 1;
     if (event.target.classList.contains('slot')) {
         if (event.target.childElementCount < 1) {
-            if ((event.target.previousElementSibling == null) || (dragged.offsetWidth < event.target.previousElementSibling.children[0].offsetWidth)) {
-                event.preventDefault();
-                dragged.parentNode.removeChild( dragged );
-                event.target.appendChild ( dragged );
-                dragged.style.opacity = 1;
-                
-                checkIfDraggable();
-                checkWin();   
+            if (event.target.previousElementSibling === null) {
+                dropIt();
+            }
+            else if (event.target.previousElementSibling.childElementCount > 0) {
+                if (dragged.offsetWidth < event.target.previousElementSibling.children[0].offsetWidth) {
+                    dropIt();
+                }
             }
         }
     }
