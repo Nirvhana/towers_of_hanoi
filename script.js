@@ -54,7 +54,7 @@ document.addEventListener("drop", function( event ) {
     }
 
 function checkWin() {
-    if (t1s2.childElementCount === 1) {
+    if (t3s6.childElementCount === 1) {
         d.getElementById("won").style.opacity = 1;
     }
 }
