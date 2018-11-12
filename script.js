@@ -39,7 +39,7 @@ for ( i = 1 ; i < 7 ; i++) {
 }
 
 function checkWin() {
-    if (t3s1.childElementCount === 1) {
+    if (t3s6.childElementCount === 1) {
         d.getElementById("won").style.opacity = 1;
         d.getElementById("won").style.zIndex = 111;
     }
