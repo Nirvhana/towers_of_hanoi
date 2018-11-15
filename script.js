@@ -1,8 +1,6 @@
 var dragged;
-
 var d = document;
-
-
+var targetTower;
 
 document.addEventListener("dragstart", function( event ) {
     // Speichern einer ref auf das drag-bare Element
@@ -11,12 +9,16 @@ document.addEventListener("dragstart", function( event ) {
     event.target.style.opacity = 0.5;
 }, false);
 
+document.addEventListener("dragend", function( event ) {
+    // Speichern einer ref auf das drag-bare Element
+    // Element halb-transparent machen
+    event.target.style.opacity = 1;
+}, false);
+
 /* events fired on the drop targets */
 document.addEventListener("dragover", function( event ) {
     event.preventDefault();
 }, false);
-
-
 
 function checkIfDraggable() {
 
@@ -39,31 +41,41 @@ function checkWin() {
     }
 }
 
-function dropIt() {
+function dropIt(freeSlot) {
 
-    event.preventDefault();
     dragged.parentNode.removeChild( dragged );
-    event.target.appendChild ( dragged );
-    dragged.style.opacity = 1;
-    
+    freeSlot.appendChild ( dragged );
     checkIfDraggable();
     checkWin(); 
 }
 
+
 document.addEventListener("drop", function( event ) {
-    dragged.style.opacity = 1;
-    if (dragged.getAttribute('draggable') == 'true') {
-        if (event.target.classList.contains('slot')) {
-            if (event.target.childElementCount < 1) {
-                if (event.target.previousElementSibling === null) {
-                    dropIt();
-                }
-                else if (event.target.previousElementSibling.childElementCount > 0) {
-                    if (dragged.offsetWidth < event.target.previousElementSibling.children[0].offsetWidth) {
-                        dropIt();
-                    }
-                }
+
+    var targetTower = event.target.parentNode.querySelectorAll(".slot");
+    var freeSlot;
+
+    if ((event.target.classList == "slots") && (dragged.getAttribute('draggable') == 'true')) {
+        // find Top Slide of the tower
+        for (i = 0 ; i < targetTower.length ; i++) {
+
+            if (targetTower[i].childElementCount > 0) {
+                topSlide = targetTower[i];
+                freeSlot = targetTower[i+1];
             }
+            
+        }
+        // If the tower has no slides on it
+        if (freeSlot == undefined) {
+            freeSlot = targetTower[0];
+        }
+        
+        console.log(freeSlot);
+        
+        // checks if the top Slide of target tower is bigger than the dragged slide
+        if ((freeSlot == targetTower[0]) || (dragged.offsetWidth < topSlide.children[0].offsetWidth)) {
+            dropIt(freeSlot);
         }
     }
+
 }, false);
